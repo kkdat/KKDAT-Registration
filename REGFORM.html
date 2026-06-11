@@ -10,18 +10,49 @@
     <style>
         * { font-family: 'Inter', sans-serif; }
         
+        /* Dynamic Animated Gradient Root Settings */
+        :root {
+            --gradient-background-start: rgb(108, 0, 162);
+            --gradient-background-end: rgb(0, 17, 82);
+            --first-color: 18, 113, 255;
+            --second-color: 221, 74, 255;
+            --third-color: 100, 220, 255;
+            --fourth-color: 200, 50, 50;
+            --fifth-color: 180, 180, 50;
+            --pointer-color: 140, 100, 255;
+            --size: 80%;
+            --blending-value: hard-light;
+        }
+
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #60a5fa 100%);
+            background: linear-gradient(40deg, var(--gradient-background-start), var(--gradient-background-end));
             background-attachment: fixed;
+            margin: 0;
+            overflow-x: hidden;
         }
 
+        /* Ambient Fluid Container */
+        .gradients-container {
+            filter: url(#blurMe) blur(40px);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism adjustment for deep fluid visibility */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        .input-field { transition: all 0.3s ease; border: 1px solid #e2e8f0; font-size: 16px; }
+        /* Form Interaction Fields */
+        .input-field { transition: all 0.3s ease; border: 1px solid #e2e8f0; font-size: 16px; background-color: rgba(255, 255, 255, 0.9); }
         .input-field:focus {
             transform: translateY(-2px);
             border-color: #3b82f6;
@@ -29,15 +60,15 @@
             outline: none;
         }
 
-        .fade-in { animation: fadeIn 0.5s ease-in; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         #passcodeOverlay {
             position: fixed;
             inset: 0;
             z-index: 100;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -48,178 +79,282 @@
             position: fixed;
             inset: 0;
             z-index: 200;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
+
+        /* --- GRADIENT BLOB ANIMATIONS --- */
+        .g-blob {
+            position: absolute;
+            mix-blend-mode: var(--blending-value);
+            width: var(--size);
+            height: var(--size);
+            top: calc(50% - var(--size) / 2);
+            left: calc(50% - var(--size) / 2);
+        }
+
+        .g-1 {
+            background: radial-gradient(circle at center, rgba(var(--first-color), 1) 0, rgba(var(--first-color), 0) 50%) no-repeat;
+            transform-origin: center center;
+            animation: moveVertical 30s ease infinite;
+        }
+        .g-2 {
+            background: radial-gradient(circle at center, rgba(var(--second-color), 0.8) 0, rgba(var(--second-color), 0) 50%) no-repeat;
+            transform-origin: calc(50% - 400px);
+            animation: moveInCircle 20s linear infinite;
+        }
+        .g-3 {
+            background: radial-gradient(circle at center, rgba(var(--third-color), 0.8) 0, rgba(var(--third-color), 0) 50%) no-repeat;
+            transform-origin: calc(50% + 400px);
+            animation: moveInCircle 40s linear infinite reverse;
+        }
+        .g-4 {
+            background: radial-gradient(circle at center, rgba(var(--fourth-color), 0.8) 0, rgba(var(--fourth-color), 0) 50%) no-repeat;
+            transform-origin: calc(50% - 200px);
+            animation: moveHorizontal 40s ease infinite;
+            opacity: 0.7;
+        }
+        .g-5 {
+            background: radial-gradient(circle at center, rgba(var(--fifth-color), 0.8) 0, rgba(var(--fifth-color), 0) 50%) no-repeat;
+            transform-origin: calc(50% - 800px) calc(50% + 800px);
+            animation: moveInCircle 20s ease infinite;
+        }
+        .g-interactive {
+            position: absolute;
+            background: radial-gradient(circle at center, rgba(var(--pointer-color), 0.8) 0, rgba(var(--pointer-color), 0) 50%) no-repeat;
+            width: 100%;
+            height: 100%;
+            top: -50%;
+            left: -50%;
+            opacity: 0.7;
+            mix-blend-mode: var(--blending-value);
+            will-change: transform;
+        }
+
+        @keyframes moveInCircle {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes moveVertical {
+            0% { transform: translateY(-50%); }
+            50% { transform: translateY(50%); }
+            100% { transform: translateY(-50%); }
+        }
+        @keyframes moveHorizontal {
+            0% { transform: translateX(-50%) translateY(-10%); }
+            50% { transform: translateX(50%) translateY(10%); }
+            100% { transform: translateX(-50%) translateY(-10%); }
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 py-12 px-4">
+<body class="min-h-screen py-12 px-4 relative">
 
-    <div id="reviewModal">
-        <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b pb-4">Review Your Information</h2>
-            <div id="reviewContent" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-8">
+    <div class="gradients-container" id="gradientContainer">
+        <svg class="hidden">
+            <defs>
+                <filter id="blurMe">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+                    <feBlend in="SourceGraphic" in2="goo" />
+                </filter>
+            </defs>
+        </svg>
+        <div class="g-blob g-1"></div>
+        <div class="g-blob g-2"></div>
+        <div class="g-blob g-3"></div>
+        <div class="g-blob g-4"></div>
+        <div class="g-blob g-5"></div>
+        <div class="g-interactive" id="interactiveBlob"></div>
+    </div>
+
+    <div class="relative z-10">
+        <div id="reviewModal">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b pb-4">Review Your Information</h2>
+                <div id="reviewContent" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-8"></div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="closeReview()" class="flex-1 py-3 bg-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-300 transition-all">Edit Details</button>
+                    <button onclick="confirmSubmission()" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-lg transition-all">Confirm & Submit</button>
                 </div>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <button onclick="closeReview()" class="flex-1 py-3 bg-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-300 transition-all">Edit Details</button>
-                <button onclick="confirmSubmission()" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-lg transition-all">Confirm & Submit</button>
             </div>
         </div>
-    </div>
 
-    <div id="passcodeOverlay">
-        <div class="glass-panel p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center">
-            <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+        <div id="passcodeOverlay">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Access Protected</h2>
+                <p class="text-slate-500 text-sm mb-6">Enter the authorized passcode.</p>
+                <input type="password" id="passcodeInput" class="input-field w-full px-4 py-3 rounded-xl mb-4 text-center tracking-widest font-bold" placeholder="••••••••">
+                <button onclick="checkPasscode()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all">Verify Access</button>
+                <p id="passcodeError" class="text-red-500 text-xs mt-3 hidden">Invalid daily passcode. Please contact the administrator.</p>
             </div>
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Access Protected</h2>
-            <p class="text-slate-500 text-sm mb-6">Enter the authorized passcode.</p>
-            <input type="password" id="passcodeInput" class="input-field w-full px-4 py-3 rounded-xl mb-4 text-center tracking-widest font-bold" placeholder="••••••••">
-            <button onclick="checkPasscode()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all">Verify Access</button>
-            <p id="passcodeError" class="text-red-500 text-xs mt-3 hidden">Invalid daily passcode. Please contact the administrator.</p>
         </div>
-    </div>
 
-    <div id="mainContent" class="opacity-0 pointer-events-none transition-all duration-700">
-        <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-white/10">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <div class="w-10 h-10 sm:w-11 sm:h-11 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl border border-white/20 overflow-hidden p-1">
+        <div id="mainContent" class="opacity-0 pointer-events-none transition-all duration-700">
+            <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
+                <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl border border-white/20 overflow-hidden p-1">
+                            <img src="CURRIMAO.PNG" alt="Logo" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <span class="text-white font-bold text-sm sm:text-lg tracking-tight truncate">KKDAT II Currimao</span>
+                    </div>
+                    <div class="flex gap-2 sm:gap-4">
+                        <a href="REGFORM.html" class="text-white bg-white/20 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-white/30 transition-all">Register</a>
+                        <a href="SOCIAL HUB.html" class="text-white/70 hover:text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">Socmed Hub</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-5xl mx-auto pt-16 sm:pt-24">
+                <div class="text-center mb-10 fade-in px-2">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-white/10 backdrop-blur-md rounded-full mx-auto mb-6 p-1.5 shadow-2xl border border-white/20 overflow-hidden">
                         <img src="CURRIMAO.PNG" alt="Logo" class="w-full h-full object-cover rounded-full">
                     </div>
-                    <span class="text-white font-bold text-sm sm:text-lg tracking-tight truncate">KKDAT II Currimao</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">KKDAT Registration</h1>
+                    <p class="text-indigo-200 text-sm sm:text-base">Data is synchronized with the official KKDAT database</p>
                 </div>
-                <div class="flex gap-2 sm:gap-4">
-                    <a href="REGFORM.html" class="text-white bg-white/20 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-white/30 transition-all">Register</a>
-                    <a href="SOCIAL HUB.html" class="text-white/70 hover:text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">Socmed Hub</a>
+
+                <div class="glass-panel rounded-3xl shadow-2xl p-6 sm:p-10 fade-in">
+                    <form id="registrationForm" class="space-y-6 sm:space-y-8">
+                        <div class="bg-white/40 rounded-2xl p-4 sm:p-6 border border-white/20">
+                            <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">1</span>
+                                Personal Information
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Full Name *</label>
+                                    <input type="text" id="fullName" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Juan Dela Cruz">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Sex *</label>
+                                    <select id="sex" required class="input-field w-full px-4 py-3 rounded-xl bg-white">
+                                        <option value="">Select sex</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Birthday *</label>
+                                    <input type="date" id="birthDate" required class="input-field w-full px-4 py-3 rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Age</label>
+                                    <input type="number" id="age" readonly class="input-field w-full px-4 py-3 rounded-xl bg-slate-100 font-bold text-indigo-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Civil Status *</label>
+                                    <select id="civilStatus" required class="input-field w-full px-4 py-3 rounded-xl bg-white">
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
+                                        <option value="Widowed">Widowed</option>
+                                        <option value="Separated">Separated</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/40 rounded-2xl p-4 sm:p-6 border border-white/20">
+                            <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">2</span>
+                                Contact & Address
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Complete Address *</label>
+                                    <textarea id="address" required rows="2" class="input-field w-full px-4 py-3 rounded-xl" placeholder="Poblacion, Currimao, Ilocos Norte"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Email Address *</label>
+                                    <input type="email" id="email" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="juan@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Mobile Number *</label>
+                                    <input type="tel" id="mobileNumber" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="09123456789">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Facebook Profile Link</label>
+                                    <input type="text" id="facebook" class="input-field w-full px-4 py-3 rounded-xl" placeholder="facebook.com/username">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Emergency Contact (Name - Number) *</label>
+                                    <input type="text" id="contactPerson" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Maria Dela Cruz - 09123456789">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/40 rounded-2xl p-4 sm:p-6 border border-white/20">
+                            <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">3</span>
+                                Data Privacy Consent
+                            </h2>
+                            <div class="text-sm text-slate-600 space-y-3 mb-6 bg-white/60 p-4 rounded-xl border border-slate-200/50">
+                                <p>In compliance with the <strong>Data Privacy Act of 2012</strong>, by clicking "Register Member", I hereby authorize KKDAT II Currimao to collect, process, and store my personal information for the purpose of membership records and official organizational activities.</p>
+                                <p>I understand that my information will be handled with strict confidentiality and will not be shared with third parties without my explicit consent.</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <input type="checkbox" id="privacyConsent" required class="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 cursor-pointer">
+                                <label for="privacyConsent" class="text-sm text-slate-700 cursor-pointer select-none">
+                                    I have read and agree to the Data Privacy terms and conditions. *
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
+                            <button type="reset" class="w-full sm:w-auto px-8 py-4 bg-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-slate-300 transition-all">Clear Form</button>
+                            <button type="button" id="reviewBtn" onclick="openReview()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-bold hover:shadow-lg transition-all">Register Member</button>
+                            <button type="submit" id="submitBtn" class="hidden"></button>
+                        </div>
+                    </form>
                 </div>
-            </div>
-        </nav>
-
-        <div class="relative max-w-5xl mx-auto pt-16 sm:pt-24">
-            <div class="text-center mb-10 fade-in px-2">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-white/10 backdrop-blur-md rounded-full mx-auto mb-6 p-1.5 shadow-2xl border border-white/20 overflow-hidden">
-                    <img src="CURRIMAO.PNG" alt="Logo" class="w-full h-full object-cover rounded-full">
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">KKDAT Registration</h1>
-                <p class="text-indigo-200 text-sm sm:text-base">Data is synchronized with the official KKDAT database</p>
-            </div>
-
-            <div class="glass-panel rounded-3xl shadow-2xl p-6 sm:p-10 fade-in">
-                <form id="registrationForm" class="space-y-6 sm:space-y-8">
-                    <div class="bg-slate-50/50 rounded-2xl p-4 sm:p-6 border border-slate-100">
-                        <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6 flex items-center">
-                            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">1</span>
-                            Personal Information
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Full Name *</label>
-                                <input type="text" id="fullName" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Juan Dela Cruz">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Sex *</label>
-                                <select id="sex" required class="input-field w-full px-4 py-3 rounded-xl bg-white">
-                                    <option value="">Select sex</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Birthday *</label>
-                                <input type="date" id="birthDate" required class="input-field w-full px-4 py-3 rounded-xl">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Age</label>
-                                <input type="number" id="age" readonly class="input-field w-full px-4 py-3 rounded-xl bg-slate-100 font-bold text-indigo-600">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Civil Status *</label>
-                                <select id="civilStatus" required class="input-field w-full px-4 py-3 rounded-xl bg-white">
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Widowed">Widowed</option>
-                                    <option value="Separated">Separated</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50/50 rounded-2xl p-4 sm:p-6 border border-slate-100">
-                        <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6 flex items-center">
-                            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">2</span>
-                            Contact & Address
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Complete Address *</label>
-                                <textarea id="address" required rows="2" class="input-field w-full px-4 py-3 rounded-xl" placeholder="Poblacion, Currimao, Ilocos Norte"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Email Address *</label>
-                                <input type="email" id="email" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="juan@example.com">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Mobile Number *</label>
-                                <input type="tel" id="mobileNumber" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="09123456789">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Facebook Profile Link</label>
-                                <input type="text" id="facebook" class="input-field w-full px-4 py-3 rounded-xl" placeholder="facebook.com/username">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Emergency Contact (Name - Number) *</label>
-                                <input type="text" id="contactPerson" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Maria Dela Cruz - 09123456789">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50/50 rounded-2xl p-4 sm:p-6 border border-slate-100">
-                        <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-4 flex items-center">
-                            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center mr-3 text-xs sm:text-sm">3</span>
-                            Data Privacy Consent
-                        </h2>
-                        <div class="text-sm text-slate-600 space-y-3 mb-6 bg-white/50 p-4 rounded-xl border border-slate-200">
-                            <p>In compliance with the <strong>Data Privacy Act of 2012</strong>, by clicking "Register Member", I hereby authorize KKDAT II Currimao to collect, process, and store my personal information for the purpose of membership records and official organizational activities.</p>
-                            <p>I understand that my information will be handled with strict confidentiality and will not be shared with third parties without my explicit consent.</p>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <input type="checkbox" id="privacyConsent" required class="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 cursor-pointer">
-                            <label for="privacyConsent" class="text-sm text-slate-700 cursor-pointer select-none">
-                                I have read and agree to the Data Privacy terms and conditions. *
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
-                        <button type="reset" class="w-full sm:w-auto px-8 py-4 bg-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-slate-300 transition-all">Clear Form</button>
-                        <button type="button" id="reviewBtn" onclick="openReview()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-bold hover:shadow-lg transition-all">Register Member</button>
-                        <button type="submit" id="submitBtn" class="hidden"></button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 
     <script>
-        // --- NEW FULLSCREEN FUNCTION ---
+        // --- CHROME/SAFARI GRADIENT OPTIMIZER ---
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isSafari) {
+            document.getElementById('gradientContainer').classList.add('blur-2xl');
+        }
+
+        // --- INTERACTIVE MOUSE TRACKING ENGINE ---
+        const interBlob = document.getElementById('interactiveBlob');
+        let curX = 0, curY = 0, tgX = 0, tgY = 0;
+
+        function mouseLerp() {
+            curX += (tgX - curX) / 20;
+            curY += (tgY - curY) / 20;
+            interBlob.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+            requestAnimationFrame(mouseLerp);
+        }
+
+        window.addEventListener('mousemove', (event) => {
+            const rect = interBlob.getBoundingClientRect();
+            tgX = event.clientX - rect.left - (rect.width / 2);
+            tgY = event.clientY - rect.top - (rect.height / 2);
+        });
+        
+        // Boot Interactive Tracking
+        mouseLerp();
+
+        // --- FULLSCREEN LOGIC ---
         function enterFullscreen() {
             const doc = document.documentElement;
-            if (doc.requestFullscreen) {
-                doc.requestFullscreen();
-            } else if (doc.mozRequestFullScreen) { // Firefox
-                doc.mozRequestFullScreen();
-            } else if (doc.webkitRequestFullscreen) { // Chrome, Safari, Opera
-                doc.webkitRequestFullscreen();
-            } else if (doc.msRequestFullscreen) { // IE/Edge
-                doc.msRequestFullscreen();
-            }
+            if (doc.requestFullscreen) doc.requestFullscreen();
+            else if (doc.mozRequestFullScreen) doc.mozRequestFullScreen();
+            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+            else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
         }
 
         function openReview() {
@@ -246,7 +381,7 @@
             fields.forEach(field => {
                 const val = document.getElementById(field.id).value || 'N/A';
                 html += `
-                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100">
                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${field.label}</p>
                         <p class="text-slate-700 font-medium">${val}</p>
                     </div>`;
@@ -279,9 +414,7 @@
             const errorMsg = document.getElementById('passcodeError');
 
             if (input === daily) {
-                // Trigger Fullscreen on success (User Gesture requirement satisfied)
                 enterFullscreen();
-
                 document.getElementById('passcodeOverlay').style.display = 'none';
                 const main = document.getElementById('mainContent');
                 main.classList.remove('opacity-0', 'pointer-events-none');
