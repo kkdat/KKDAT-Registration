@@ -302,8 +302,19 @@
                                 <p>In compliance with the <strong>Data Privacy Act of 2012</strong>, by clicking "Register Member", I hereby authorize KKDAT II Currimao to collect, process, and store my personal information for the purpose of membership records and official organizational activities.</p>
                                 <p>I understand that my information will be handled with strict confidentiality and will not be shared with third parties without my explicit consent.</p>
                             </div>
-                            <div class="flex items-start gap-3">
-                                <input type="checkbox" id="privacyConsent" required class="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 cursor-pointer">
+                            
+                            <div class="flex items-start gap-4">
+                                <label class="relative block cursor-pointer select-none rounded-full outline-2 outline-offset-2 outline-[#0b6e4f] has-[:checked]:rounded-md has-[:focus-visible]:outline flex-shrink-0 mt-0.5">
+                                    <input
+                                      type="checkbox"
+                                      id="privacyConsent"
+                                      required
+                                      class="peer absolute h-0 w-0 opacity-0"
+                                    />
+                                    <div class="relative left-0 top-0 h-[1.5rem] w-[1.5rem] rounded-[50%] bg-slate-200 border border-slate-300 transition duration-300 peer-checked:animate-pulse peer-checked:rounded-md peer-checked:bg-[#0b6e4f] peer-checked:border-[#0b6e4f]">
+                                        <div class="absolute left-[0.5rem] top-[0.25rem] hidden h-[0.8rem] w-[0.45rem] rotate-45 border-b-[0.2rem] border-r-[0.2rem] border-white peer-checked:block"></div>
+                                    </div>
+                                </label>
                                 <label for="privacyConsent" class="text-sm text-slate-700 cursor-pointer select-none">
                                     I have read and agree to the Data Privacy terms and conditions. *
                                 </label>
